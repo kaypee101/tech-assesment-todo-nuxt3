@@ -3,4 +3,5 @@
 pwd
 ls -la
 # npm start
-npm init
+npm install
+npm run dev
