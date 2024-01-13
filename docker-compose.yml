@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: ./.docker/server
+    container_name: server
+    volumes:
+      - ./server:/var/www/app:cached
+      - ./.docker/server/entrypoint.sh:/var/www/entrypoint/entrypoint.sh
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+    tty: true
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    volumes:
+      - ./.data-volume:/data/db
+      - ./.docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    environment:
+      MONGO_INITDB_DATABASE: demodb
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  data-volume:
