@@ -41,8 +41,15 @@ const useTodoStore = defineStore("todos", {
     async doneTodo(todoId) {
       searchAndUpdateStatus(this.todos, todoId);
     },
-    async removeTodo(todoId) {},
-    async removeAllTodo() {},
+    async removeTodo(todoId) {
+      searchAndDeleteTodo(this.todos, todoId);
+    },
+    async removeAllDoneTodos() {
+      removeAllCompletedTodos(this.todos);
+    },
+    async removeAllTodos() {
+      removeAllTodosCompletely(this.todos);
+    },
   },
   getters: {
     getTodos: (data) => {
@@ -73,11 +80,41 @@ function searchAndUpdateStatus(todos, todoId) {
   if (taskIndex !== -1) {
     // Found the task with the given ID
     todos[taskIndex].status.done = !todos[taskIndex].status.done;
-    console.log(`Task with ID ${todoId} updated successfully.`);
+    console.log(`Task with ID ${todoId} was updated successfully.`);
   } else {
     console.log(`Task with ID ${todoId} not found.`);
   }
 
+  return todos;
+}
+
+function searchAndDeleteTodo(todos, todoId) {
+  const taskIndex = todos.findIndex((task) => task.id === todoId);
+
+  if (taskIndex !== -1) {
+    // Found the task with the given ID
+    todos.splice(taskIndex, 1);
+    console.log(`Task with ID ${todoId} was deleted successfully.`);
+  } else {
+    console.log(`Task with ID ${todoId} not found.`);
+  }
+
+  return todos;
+}
+
+function removeAllCompletedTodos(todos) {
+  const updatedTodos = todos.filter((task) => !task.status.done);
+  const removedCount = todos.length - updatedTodos.length;
+
+  todos.length = 0; // delete all for now todos
+  todos.push(...updatedTodos); // push all not finished todos
+  console.log(`${removedCount} completed tasks removed successfully.`);
+
+  return todos;
+}
+
+function removeAllTodosCompletely(todos) {
+  todos.length = 0; // delete all todos
   return todos;
 }
 
