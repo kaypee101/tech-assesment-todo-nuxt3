@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useTodoStore = defineStore("todos", {
+const useTodoStore = defineStore("todos", {
   state: () => {
     return {
       lastId: 3,
@@ -30,23 +30,18 @@ export const useTodoStore = defineStore("todos", {
     };
   },
   actions: {
-    async nextId() {
+    async nextTodoId() {
       this.lastId++;
     },
     async addTodo(form) {
-      this.nextId();
-      const nextId = this.lastId;
-      const createTodo = {
-        id: nextId,
-        name: form.name,
-        status: {
-          done: false,
-        },
-      };
+      this.nextTodoId();
+      const createTodo = createTodoData(this.lastId, form);
       this.todos.push(createTodo);
     },
-    async doneTodo(id) {},
-    async removeTodo(id) {},
+    async doneTodo(todoId) {
+      searchAndUpdateStatus(this.todos, todoId);
+    },
+    async removeTodo(todoId) {},
     async removeAllTodo() {},
   },
   getters: {
@@ -55,3 +50,29 @@ export const useTodoStore = defineStore("todos", {
     },
   },
 });
+
+const createTodoData = (nextTodoId, form) => {
+  return {
+    id: nextTodoId,
+    name: form.name,
+    status: {
+      done: false,
+    },
+  };
+};
+
+function searchAndUpdateStatus(todos, todoId) {
+  const taskIndex = todos.findIndex((task) => task.id === todoId);
+
+  if (taskIndex !== -1) {
+    // Found the task with the given ID
+    todos[taskIndex].status.done = !todos[taskIndex].status.done;
+    console.log(`Task with ID ${todoId} updated successfully.`);
+  } else {
+    console.log(`Task with ID ${todoId} not found.`);
+  }
+
+  return todos;
+}
+
+export { useTodoStore };
