@@ -1,26 +1,28 @@
 <template>
   <div>
     <div class="container p-3">
-      <div v-for="todo in todos" class="input-group mb-3">
-        <button
-          class="btn btn-outline-success"
-          type="button"
-          :id="'done-todo-button-' + todo.id"
-          @click="todoDone(todo.id)"
-        >
-          <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
-        </button>
-        <input
-          type="text"
-          class="form-control"
-          :class="{ 'text-danger': todo.status.done }"
-          :id="'todo-' + todo.id"
-          :readonly="true"
-          :disabled="true"
-          :value="todo.name"
-          :aria-describedby="'done-todo-button-' + todo.id"
-        />
-      </div>
+      <template v-for="todo in todos">
+        <div v-if="!todo.status.done" class="input-group mb-3">
+          <button
+            class="btn btn-outline-success"
+            type="button"
+            :id="'done-todo-button-' + todo.id"
+            @click="todoDone(todo.id)"
+          >
+            <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
+          </button>
+          <input
+            type="text"
+            class="form-control"
+            :class="{ 'text-danger': todo.status.done }"
+            :id="'todo-' + todo.id"
+            :readonly="true"
+            :disabled="true"
+            :value="todo.name"
+            :aria-describedby="'done-todo-button-' + todo.id"
+          />
+        </div>
+      </template>
 
       <form @submit.prevent="todoSubmit">
         <div class="input-group mb-3">
@@ -47,14 +49,6 @@ import { useTodoStore } from "../../stores/todos";
 
 const store = useTodoStore();
 const todos = ref(store.todos);
-
-const sampleTodo = {
-  id: 4,
-  name: "Sample Todo",
-  status: {
-    done: false,
-  },
-};
 
 const form = ref({
   name: "",
