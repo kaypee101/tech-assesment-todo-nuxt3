@@ -1,50 +1,70 @@
 <template>
   <div>
-    <div class="container p-3">
-      <template v-for="todo in todos">
-        <div v-if="!todo.status.done" class="input-group mb-3">
-          <button
-            class="btn btn-outline-success"
-            type="button"
-            :id="'done-todo-button-' + todo.id"
-            @click="todoDone(todo.id)"
-          >
-            <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
-          </button>
-          <input
-            type="text"
-            class="form-control"
-            :class="{ 'text-danger': todo.status.done }"
-            :id="'todo-' + todo.id"
-            :readonly="true"
-            :disabled="true"
-            :value="todo.name"
-            :aria-describedby="'done-todo-button-' + todo.id"
-          />
-        </div>
-      </template>
+    <div class="container-sm p-3">
+      <section id="action-section" class="font-monospace w-100 lh-1 py-2 px-2 mb-1 float-end">
+        <button type="button" class="btn btn-primary rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+          <span class="fs-12px fw-bold me-1">Tasks</span>
+          <span class="fs-12px badge text-bg-light text-secondary rounded-pill">{{ store.getTodoCount }}</span>
+        </button>
+        <button type="button" class="btn btn-primary rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+          <span class="fs-12px fw-bold me-1">Tasks Done</span>
+          <span class="fs-12px badge text-bg-light text-secondary rounded-pill">{{ store.getDoneTodoCount }}</span>
+        </button>
+        <button type="button" class="btn btn-danger rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+          <font-awesome-icon :icon="faTrash"> </font-awesome-icon>
+          <span class="fs-12px fw-bold ms-1">Tasks Done</span>
+        </button>
+        <button type="button" class="btn btn-danger rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+          <font-awesome-icon :icon="faTrash"> </font-awesome-icon>
+          <span class="fs-12px fw-bold ms-1">Tasks</span>
+        </button>
+      </section>
 
-      <form @submit.prevent="todoSubmit">
-        <div class="input-group mb-3">
-          <input
-            type="text"
-            class="form-control"
-            :placeholder="'Add Todo'"
-            :aria-label="'Add Todo'"
-            :aria-describedby="'add-todo-button'"
-            v-model="form.name"
-          />
-          <button class="btn btn-outline-primary" type="button" :id="'add-todo-button'" @click="todoSubmit">
-            <font-awesome-icon :icon="faPlus"> </font-awesome-icon>
-          </button>
-        </div>
-      </form>
+      <section id="todo-section" class="border border-secondary p-1">
+        <template v-for="todo in todos">
+          <div v-if="!todo.status.done" class="input-group mb-3">
+            <button
+              class="btn btn-outline-success"
+              type="button"
+              :id="'done-todo-button-' + todo.id"
+              @click="todoDone(todo.id)"
+            >
+              <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
+            </button>
+            <input
+              type="text"
+              class="form-control"
+              :class="{ 'text-danger': todo.status.done }"
+              :id="'todo-' + todo.id"
+              :readonly="true"
+              :disabled="true"
+              :value="todo.name"
+              :aria-describedby="'done-todo-button-' + todo.id"
+            />
+          </div>
+        </template>
+        <form @submit.prevent="todoSubmit">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              :placeholder="'Add Todo'"
+              :aria-label="'Add Todo'"
+              :aria-describedby="'add-todo-button'"
+              v-model="form.name"
+            />
+            <button class="btn btn-outline-primary" type="button" :id="'add-todo-button'" @click="todoSubmit">
+              <font-awesome-icon :icon="faPlus"> </font-awesome-icon>
+            </button>
+          </div>
+        </form>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useTodoStore } from "../../stores/todos";
 
 const store = useTodoStore();
@@ -65,4 +85,14 @@ const todoDone = (todoId: number) => {
   store.doneTodo(todoId);
 };
 </script>
-<style scoped></style>
+<style scoped lang="scss">
+#action-section {
+  background-color: lightgray;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fs-12px {
+  font-size: 12px;
+}
+</style>

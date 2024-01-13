@@ -48,6 +48,12 @@ const useTodoStore = defineStore("todos", {
     getTodos: (data) => {
       return data.todos;
     },
+    getTodoCount: (data) => {
+      return data.todos.length;
+    },
+    getDoneTodoCount: (data) => {
+      return data.todos.filter((todo) => todo.status.done).length;
+    },
   },
 });
 
