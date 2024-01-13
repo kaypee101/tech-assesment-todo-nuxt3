@@ -20,29 +20,31 @@
         </button>
       </section>
 
-      <section id="todo-section" class="border border-secondary p-1">
-        <template v-for="todo in todos">
-          <div v-if="!todo.status.done" class="input-group mb-3">
-            <button
-              class="btn btn-outline-success"
-              type="button"
-              :id="'done-todo-button-' + todo.id"
-              @click="todoDone(todo.id)"
-            >
-              <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
-            </button>
-            <input
-              type="text"
-              class="form-control"
-              :class="{ 'text-danger': todo.status.done }"
-              :id="'todo-' + todo.id"
-              :readonly="true"
-              :disabled="true"
-              :value="todo.name"
-              :aria-describedby="'done-todo-button-' + todo.id"
-            />
-          </div>
-        </template>
+      <section id="todo-section" class="border border-light p-1">
+        <div id="todo-items-container" class="w-100 p-2" ref="todoItemsContainer">
+          <template v-for="todo in todos">
+            <div v-if="!todo.status.done" class="input-group mb-3">
+              <button
+                class="btn btn-success"
+                type="button"
+                :id="'done-todo-button-' + todo.id"
+                @click="todoDone(todo.id)"
+              >
+                <font-awesome-icon :icon="faCheck"> </font-awesome-icon>
+              </button>
+              <input
+                type="text"
+                class="form-control"
+                :class="{ 'text-danger': todo.status.done }"
+                :id="'todo-' + todo.id"
+                :readonly="true"
+                :disabled="true"
+                :value="todo.name"
+                :aria-describedby="'done-todo-button-' + todo.id"
+              />
+            </div>
+          </template>
+        </div>
         <form @submit.prevent="todoSubmit">
           <div class="input-group">
             <input
@@ -53,7 +55,7 @@
               :aria-describedby="'add-todo-button'"
               v-model="form.name"
             />
-            <button class="btn btn-outline-primary" type="button" :id="'add-todo-button'" @click="todoSubmit">
+            <button class="btn btn-primary" type="button" :id="'add-todo-button'" @click="todoSubmit">
               <font-awesome-icon :icon="faPlus"> </font-awesome-icon>
             </button>
           </div>
@@ -73,6 +75,7 @@ const todos = ref(store.todos);
 const form = ref({
   name: "",
 });
+const todoItemsContainer: any = ref(null);
 const todoSubmit = () => {
   if (form.value.name === "") {
     alert("stop");
@@ -81,6 +84,16 @@ const todoSubmit = () => {
   store.addTodo(form.value);
   form.value.name = "";
 };
+
+watch(
+  () => store.getTodoCount,
+  () => {
+    nextTick(function () {
+      var container = todoItemsContainer.value;
+      container.scrollTop = container.scrollHeight;
+    });
+  }
+);
 const todoDone = (todoId: number) => {
   store.doneTodo(todoId);
 };
@@ -90,6 +103,12 @@ const todoDone = (todoId: number) => {
   background-color: lightgray;
   display: flex;
   justify-content: flex-end;
+}
+
+#todo-items-container {
+  height: 180px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .fs-12px {
