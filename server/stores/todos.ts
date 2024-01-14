@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 import { TodosInterface } from "~/interfaces/TodosInterface";
 
 interface TodoStoreState {
@@ -10,12 +11,13 @@ const useTodoStore = defineStore("todos", {
   state: (): TodoStoreState => {
     return {
       lastId: 0,
-      todos: getDefaultTodos(),
+      todos: [],
     };
   },
   actions: {
-    async init(todos: TodosInterface[]) {
-      this.todos = todos;
+    async init() {
+      getTodosFromLocalStorage(this.todos);
+      this.lastId = this.todos.length;
     },
     async nextTodoId() {
       this.lastId++;
@@ -24,18 +26,23 @@ const useTodoStore = defineStore("todos", {
       this.nextTodoId();
       const createTodo = createTodoData(this.lastId, form);
       this.todos.push(createTodo);
+      setTodosToLocalStorage(this.todos);
     },
     async doneTodo(todoId: number) {
       searchAndUpdateStatus(this.todos, todoId);
+      setTodosToLocalStorage(this.todos);
     },
     async removeTodo(todoId: number) {
       searchAndDeleteTodo(this.todos, todoId);
+      setTodosToLocalStorage(this.todos);
     },
     async removeAllDoneTodos() {
       removeAllCompletedTodos(this.todos);
+      setTodosToLocalStorage(this.todos);
     },
     async removeAllTodos() {
       removeAllTodosCompletely(this.todos);
+      setTodosToLocalStorage(this.todos);
     },
   },
   getters: {
@@ -103,6 +110,22 @@ function removeAllCompletedTodos(todos: TodosInterface[]) {
 function removeAllTodosCompletely(todos: TodosInterface[]) {
   todos.length = 0; // delete all todos
   return todos;
+}
+
+function getTodosFromLocalStorage(todos: TodosInterface[]) {
+  todos.length = 0; // delete all for now todos
+  todos.push(...useLocalStorage("todos", getDefaultTodos()).value);
+  return todos;
+}
+
+function setTodosToLocalStorage(todos: TodosInterface[]) {
+  if (typeof Storage !== "undefined") {
+    const todosJSON = JSON.stringify(todos);
+    localStorage.setItem("todos", todosJSON);
+    console.log("Todos saved to local storage.");
+  } else {
+    console.error("Local storage is not supported in this browser.");
+  }
 }
 
 function getDefaultTodos() {

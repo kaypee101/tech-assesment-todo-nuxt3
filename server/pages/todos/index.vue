@@ -106,6 +106,9 @@ import { useTodoStore } from "../../stores/todos";
 
 const store = useTodoStore();
 const todos = ref(store.todos);
+onMounted(() => {
+  store.init();
+});
 const form = ref({
   name: "",
 });
