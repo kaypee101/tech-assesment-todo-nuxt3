@@ -148,7 +148,7 @@ watch(
 const todoSubmit = () => {
   shouldExecuteNextTick = true;
   if (form.value.name === "") {
-    alert("stop");
+    alert("Please enter the todo task");
     return false;
   }
   store.addTodo(form.value);
