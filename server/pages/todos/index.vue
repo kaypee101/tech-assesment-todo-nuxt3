@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="container">
+      <section class="display-2 fw-bold text-light text-center mb-3">Vue Todo List</section>
       <section id="action-section" class="fw--12px fw-bold font-monospace w-100 lh-1 py-2 px-2 mb-1 float-end">
         <button type="button" class="btn btn-primary btn-width rounded-pill font-monospace lh-1 py-1 me-1 float-end">
           <span class="me-1">Tasks</span>
@@ -31,7 +32,6 @@
           <span class="ms-1">Tasks</span>
         </button>
       </section>
-
       <section id="todo-section" class="border border-light p-1">
         <div id="todo-items-container" class="w-100 p-2" ref="todoItemsContainer">
           <div
@@ -104,12 +104,23 @@
           </form>
         </div>
       </section>
+      <section id="info-section" class="mt-5 d-flex align-items-center justify-content-end ms-auto">
+        <div
+          class="info-content d-flex justify-content-end ease-transition"
+          :class="{ 'w-100 p-2': showInfo, 'w-0': !showInfo }"
+        >
+          <span class="text-light fw-bold me-2"> This application uses the browser's Local Storage to store data </span>
+        </div>
+        <button @click="toggleInfo" class="info-right btn btn-outline-dark fw-bolder">
+          <font-awesome-icon :icon="faX"> </font-awesome-icon>
+        </button>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { faCheck, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { useTodoStore } from "../../stores/todos";
 
 const store = useTodoStore();
@@ -159,6 +170,11 @@ const removeAllTodos = () => {
   shouldExecuteNextTick = false;
   store.removeAllTodos();
 };
+
+const showInfo = ref(true);
+const toggleInfo = () => {
+  showInfo.value = !showInfo.value;
+};
 </script>
 <style scoped lang="scss">
 .container {
@@ -195,7 +211,26 @@ const removeAllTodos = () => {
   scroll-behavior: smooth;
 }
 
+.info-content {
+  max-width: fit-content;
+  background-color: #18396e;
+}
+
 .fs-12px {
   font-size: 12px;
+}
+
+.w-0 {
+  width: 0 !important;
+}
+
+.info-right {
+  border-radius: 0;
+}
+
+.ease-transition {
+  transition: 0.5s ease-in-out;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>
