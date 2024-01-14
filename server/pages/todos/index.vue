@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="container-sm p-3">
+    <div class="container">
       <section id="action-section" class="fw--12px fw-bold font-monospace w-100 lh-1 py-2 px-2 mb-1 float-end">
-        <button type="button" class="btn btn-primary rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+        <button type="button" class="btn btn-primary btn-width rounded-pill font-monospace lh-1 py-1 me-1 float-end">
           <span class="me-1">Tasks</span>
           <span class="badge fw-bolder text-dark text-bg-light text-secondary rounded-pill">
             {{ store.getTodoCount }}
           </span>
         </button>
-        <button type="button" class="btn btn-primary rounded-pill font-monospace lh-1 py-1 me-1 float-end">
+        <button type="button" class="btn btn-primary btn-width rounded-pill font-monospace lh-1 py-1 me-1 float-end">
           <span class="me-1">Tasks Done</span>
           <span class="badge fw-bolder text-dark text-bg-light text-secondary rounded-pill">
             {{ store.getDoneTodoCount }}
@@ -16,7 +16,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-danger rounded-pill font-monospace lh-1 py-1 me-1 float-end"
+          class="btn btn-danger btn-width rounded-pill font-monospace lh-1 py-1 me-1 float-end"
           @click="removeAllDoneTodos()"
         >
           <font-awesome-icon :icon="faTrash"> </font-awesome-icon>
@@ -24,7 +24,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-danger rounded-pill font-monospace lh-1 py-1 me-1 float-end"
+          class="btn btn-danger btn-width rounded-pill font-monospace lh-1 py-1 me-1 float-end"
           @click="removeAllTodos()"
         >
           <font-awesome-icon :icon="faTrash"> </font-awesome-icon>
@@ -161,10 +161,31 @@ const removeAllTodos = () => {
 };
 </script>
 <style scoped lang="scss">
+.container {
+  max-width: 700px;
+}
+
 #action-section {
-  background-color: lightgray;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  background-color: lightgray;
+  .btn-width {
+    width: 150px;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  @media screen and (min-width: 575px) {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: unset;
+    .btn-width {
+      width: auto;
+      margin-bottom: unset;
+      text-align: unset;
+    }
+  }
 }
 
 #todo-items-container {

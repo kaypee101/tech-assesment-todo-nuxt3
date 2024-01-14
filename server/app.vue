@@ -1,9 +1,5 @@
 <template>
-  <div class="d-flex align-items-center vh-100">
-    <div class="m-auto w-50">
-      <NuxtPage />
-    </div>
-  </div>
+  <NuxtPage class="d-flex align-items-center vh-100 m-auto" />
 </template>
 
 <script setup lang="ts">
