@@ -1,0 +1,10 @@
+div#__nuxt,
+#__layout,
+#__layout > div,
+#app {
+  min-height: 100vh;
+}
+
+body {
+  background: linear-gradient(to bottom, #41b883, #34495e);
+}
