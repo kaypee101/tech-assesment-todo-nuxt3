@@ -34,15 +34,24 @@ const useTodoStore = defineStore("todos", {
     },
     async removeTodo(todoId: number) {
       searchAndDeleteTodo(this.todos, todoId);
-      setTodosToLocalStorage(this.todos);
+      setTimeout(() => {
+        removeIsDeletedTodos(this.todos);
+        setTodosToLocalStorage(this.todos);
+      }, 450);
     },
     async removeAllDoneTodos() {
       removeAllCompletedTodos(this.todos);
-      setTodosToLocalStorage(this.todos);
+      setTimeout(() => {
+        removeIsDeletedTodos(this.todos);
+        setTodosToLocalStorage(this.todos);
+      }, 450);
     },
     async removeAllTodos() {
       removeAllTodosCompletely(this.todos);
-      setTodosToLocalStorage(this.todos);
+      setTimeout(() => {
+        removeIsDeletedTodos(this.todos);
+        setTodosToLocalStorage(this.todos);
+      }, 450);
     },
   },
   getters: {
@@ -87,7 +96,7 @@ function searchAndDeleteTodo(todos: TodosInterface[], todoId: number) {
 
   if (todoIndex !== -1) {
     // Found the todo with the given ID
-    todos.splice(todoIndex, 1);
+    todos[todoIndex].is_deleted = true;
     console.log(`Todo with ID ${todoId} was deleted successfully.`);
   } else {
     console.log(`Todo with ID ${todoId} not found.`);
@@ -97,7 +106,12 @@ function searchAndDeleteTodo(todos: TodosInterface[], todoId: number) {
 }
 
 function removeAllCompletedTodos(todos: TodosInterface[]) {
-  const updatedTodos = todos.filter((todo: TodosInterface) => !todo.status.done);
+  const updatedTodos = todos.map((todo: TodosInterface) => {
+    if (todo.status.done) {
+      todo.is_deleted = true;
+    }
+    return todo;
+  });
   const removedCount = todos.length - updatedTodos.length;
 
   todos.length = 0; // delete all for now todos
@@ -108,7 +122,25 @@ function removeAllCompletedTodos(todos: TodosInterface[]) {
 }
 
 function removeAllTodosCompletely(todos: TodosInterface[]) {
-  todos.length = 0; // delete all todos
+  const updatedTodos = todos.map((todo: TodosInterface) => {
+    if (todo.is_deleted === undefined || todo.is_deleted == false) {
+      todo.is_deleted = true;
+    }
+    return todo;
+  });
+  const removedCount = todos.length - updatedTodos.length;
+
+  todos.length = 0; // delete all for now todos
+  todos.push(...updatedTodos); // push all not finished todos
+  console.log(`${removedCount} completed todos removed successfully.`);
+
+  return todos;
+}
+
+function removeIsDeletedTodos(todos: TodosInterface[]) {
+  const updatedTodos = todos.filter((todo: TodosInterface) => !todo.is_deleted);
+  todos.length = 0; // delete all for now todos
+  todos.push(...updatedTodos); // push all not finished todos
   return todos;
 }
 

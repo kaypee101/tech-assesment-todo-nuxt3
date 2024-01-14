@@ -34,7 +34,15 @@
 
       <section id="todo-section" class="border border-light p-1">
         <div id="todo-items-container" class="w-100 p-2" ref="todoItemsContainer">
-          <div v-for="(todo, index) in todos" class="input-group" :class="{ 'mb-3': index !== todos.length - 1 }">
+          <div
+            v-for="(todo, index) in todos"
+            class="input-group"
+            :class="{
+              'mb-3': index !== todos.length - 1,
+              animate__animated: todo.is_deleted,
+              animate__backOutRight: todo.is_deleted,
+            }"
+          >
             <button
               v-if="todo.status.done"
               class="btn btn-dark"
@@ -161,6 +169,7 @@ const removeAllTodos = () => {
 
 #todo-items-container {
   height: 165px;
+  overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
 }

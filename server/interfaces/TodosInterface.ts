@@ -4,4 +4,5 @@ export interface TodosInterface {
   status: {
     done: boolean;
   };
+  is_deleted?: boolean;
 }

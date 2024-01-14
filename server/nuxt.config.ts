@@ -49,7 +49,7 @@ export default defineNuxtConfig({
     },
   },
   modules: ["@pinia/nuxt"],
-  css: ["@fortawesome/fontawesome-svg-core/styles.css"],
+  css: ["@fortawesome/fontawesome-svg-core/styles.css", "animate.css/animate.min.css"],
   typescript: {
     tsConfig: {
       compilerOptions: {
